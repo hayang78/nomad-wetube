@@ -4,13 +4,17 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import bodyparser from "body-parser";
-import { userRouter } from "./router"; // export default로 선언되지않으면 이렇게 import 해야한다.
+import userRouter from "./routers/userRouter";
+import videoRouter from "./routers/videoRouter";
+import globalRouter from "./routers/globalRouter";
+import routes from "./routes";
+//import { userRouter } from "./routers/userRouter"; // export default로 선언하지 않은 것을 import할때는 이렇게 import 해야한다.
 const app = express();
 
-const handleHome = (req, res) => res.send("Hello from Home");
+//const handleHome = (req, res) => res.send("Hello from Home"); //삭제
+//const handleProfile = (req, res) => res.send("You are on my profile"); //삭제
 
-const handleProfile = (req, res) => res.send("You are on my profile");
-
+app.set("view engine", "pug");
 app.use(cookieParser());
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -18,10 +22,11 @@ app.use(helmet());
 app.use(morgan("dev")); //모든 route에 미들웨어 추가. route 정의 전에 선언해야함.
 
 //app.get("/", betweenHome, handleHome); //하나의 route에 미들웨어 추가
-app.get("/", handleHome);
+//app.get("/", handleHome); //삭제
+//app.get("/profile", handleProfile); //삭제
 
-app.get("/profile", handleProfile);
-
-app.use("/user", userRouter); // /user로 들어오는 모든 요청을 userRouter로 이용한다.
+app.use(routes.home, globalRouter);
+app.use(routes.users, userRouter); // /user로 들어오는 모든 요청을 userRouter로 이용한다.
+app.use(routes.videos, videoRouter);
 
 export default app;
