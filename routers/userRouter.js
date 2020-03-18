@@ -10,9 +10,10 @@ import {
 const userRouter = express.Router();
 
 userRouter.get(routes.users, users);
-userRouter.get(routes.userDetail, userDetail);
+//userDetail이 먼저 오면 edit-profile을 :id로 인식해서 userdetail로 이동하기 때문에 먼저 선언해야함
 userRouter.get(routes.editProfile, editProfile);
 userRouter.get(routes.changePassword, changePassword);
+userRouter.get(routes.userDetail, userDetail);
 
 export default userRouter;
 
