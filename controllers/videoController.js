@@ -1,4 +1,4 @@
-import { videos } from "../db";
+//import { videos } from "../db"; // DB초기화는  init.js에서 처리
 import routes from "../routes";
 
 export const home = (req, res) => {
