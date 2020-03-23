@@ -28,13 +28,24 @@ export const search = (req, res) => {
 export const getUpload = (req, res) =>
   res.render("upload", { pageTitle: "Upload" });
 
-export const postUpload = (req, res) => {
+export const postUpload = async (req, res) => {
+  //const { body, file} = req;
+  //console.log(body, file);
+
   const {
-    body: { file, title, description }
+    body: { title, description },
+    file: { path } //file: multer에서 넘겨주는 field. 여러 파일일 경우 files
   } = req;
+
+  const newVideo = await Video.create({
+    fileUrl: path,
+    title: title,
+    description: description
+  });
   // To Do: Upload and Save Video
   //res.render("upload", { pageTitle: "Upload" });
-  res.redirect(routes.videoDetail(345345));
+  console.log(newVideo);
+  res.redirect(routes.videoDetail(newVideo.id));
 };
 
 export const videoDetail = (req, res) =>

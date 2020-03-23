@@ -1,4 +1,7 @@
+import multer from "multer";
 import routes from "./routes";
+
+export const multerVideo = multer({ dest: "uploads/videos/" }); //videos/ 서버에 저장될 경로
 
 //Express response -> rs.locals 참고
 export const localsMiddleware = (req, res, next) => {
@@ -10,3 +13,6 @@ export const localsMiddleware = (req, res, next) => {
   };
   next();
 };
+
+//Single은 하나의 파일만 업로드할수있다. videoFile -> Form.input의 이름
+export const uploadVideo = multerVideo.single("videoFile");
