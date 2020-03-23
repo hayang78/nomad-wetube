@@ -1,7 +1,7 @@
 import multer from "multer";
 import routes from "./routes";
 
-export const multerVideo = multer({ dest: "uploads/videos/" }); //videos/ 서버에 저장될 경로
+export const multerVideo = multer({ dest: "uploads/videos/" }); //videos/ 서버에 저장될 경로 // /videos/ 라고 쓸경우 루트에 폴더 생성
 
 //Express response -> rs.locals 참고
 export const localsMiddleware = (req, res, next) => {

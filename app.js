@@ -17,6 +17,7 @@ const app = express();
 
 app.use(helmet());
 app.set("view engine", "pug");
+app.use("/uploads", express.static("uploads")); //디렉토리를 전달해줌. /uploads로 접근시 uploads 디렉토리 전달
 app.use(cookieParser());
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
