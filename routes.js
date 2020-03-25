@@ -38,13 +38,25 @@ const routes = {
   upload: UPLOAD,
   videoDetail: id => {
     if (id) {
-      return `/videos/${id}`;
+      return `/videos/${id}`; //런타임에서 사용자가 호출시에는 이것이 호출됨
     } else {
-      return VIDEO_DETAIL;
+      return VIDEO_DETAIL; //서버가 시작할때 이것으로 라우팅된다 그래서 :id가 전달된다.
     }
   },
-  editVideo: EDIT_VIDEO,
-  deleteVideo: DELETE_VIDEO
+  editVideo: id => {
+    if (id) {
+      return `/videos/${id}/edit`;
+    } else {
+      return EDIT_VIDEO;
+    }
+  },
+  deleteVideo: id => {
+    if (id) {
+      return `/videos/${id}/delete`;
+    } else {
+      return DELETE_VIDEO;
+    }
+  }
 };
 
 export default routes;
