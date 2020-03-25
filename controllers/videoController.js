@@ -12,13 +12,22 @@ export const home = async (req, res) => {
   }
 };
 
-export const search = (req, res) => {
+export const search = async (req, res) => {
   //const searchingBy = req.query.term; //ES6 이전 예전방식
   const {
     query: { term: searchingBy } //term을 searchingBy로 재할당
   } = req;
   //console.log(term); //searchingBy로 할당했기 때문에 오류 발생
   //console.log(searchingBy);
+
+  let videos = [];
+  try {
+    videos = await Video.find({
+      title: { $regex: searchingBy, $options: "i" }
+    }); //options i -> insensitive 덜민감하게 검색
+  } catch (error) {
+    console.log(error);
+  }
   res.render("search", { pageTitle: "Search", searchingBy, videos });
 };
 
