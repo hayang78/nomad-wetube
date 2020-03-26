@@ -2,16 +2,24 @@ const path = require("path"); //모던js => import path from "path"
 const autoprefixer = require("autoprefixer");
 const ExtractCSS = require("extract-text-webpack-plugin");
 
-const MODE = process.env.WEBPACK_ENV;
+const MODE = process.env.WEBPACK_ENV; //개발모드, 제품모드로 설정, 실행시 파라메터로 전달
 
 const ENTRY_FILE = path.resolve(__dirname, "assets", "js", "main.js"); //__dirname: 현재 디레토리 경로, Node.js 전역변수
 const OUTPUT_DIR = path.join(__dirname, "static");
 
 const config = {
-  entry: ENTRY_FILE,
+  entry: ["@babel/polyfill", ENTRY_FILE],
   mode: MODE,
   module: {
     rules: [
+      {
+        test: /\.(js)$/,
+        use: [
+          {
+            loader: "babel-loader"
+          }
+        ]
+      },
       {
         test: /\.(scss)$/, //scss파일을 찾아서
         use: ExtractCSS.extract([
@@ -22,8 +30,8 @@ const config = {
           {
             loader: "postcss-loader", //2.css를 받아서 plugin을 가지고 css를 호환성 관련 해결, ex>IE 호환등 prefix등등 처리
             options: {
-              plugin() {
-                return [autoprefixer({ browsers: "cover 99.5%" })];
+              plugins() {
+                return [autoprefixer({ overrideBrowserslist: "cover 99.5%" })];
               }
             }
           },
