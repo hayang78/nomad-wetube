@@ -26,6 +26,7 @@ const VideoSchema = new mongoose.Schema({
   ]
 });
 
+//첫번째 파라메터 이름으로 Collection을 만든다. 소문자로 변환후 복수형으로 변환
 const model = mongoose.model("Video", VideoSchema);
 
 export default model;
