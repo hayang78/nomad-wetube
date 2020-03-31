@@ -2,6 +2,7 @@ import passport from "passport";
 import GithubStrategy from "passport-github";
 import User from "./models/User";
 import { githubLoginCallback } from "./controllers/userController";
+import routes from "./routes";
 
 //passport-local-mongoose를 이용하면 strategy 생성
 passport.use(User.createStrategy());
@@ -10,7 +11,7 @@ passport.use(
     {
       clientID: process.env.GH_ID,
       clientSecret: process.env.GH_SECRET,
-      callbackURL: "http://localhost:4000/auth/github/callback"
+      callbackURL: `http://localhost:4000${routes.gitHubCallback}`
     },
     githubLoginCallback
   )
