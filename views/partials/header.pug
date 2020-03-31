@@ -9,7 +9,8 @@ header.header
         .header__column
             ul
                 // user.isAuthenticated === false 로 사용하면 user객체가 없을 경우 false로 빠져 버린다.
-                if !user.isAuthenticated  
+                //if !user.isAuthenticated  
+                if !user
                     li
                         a(href=routes.join) Join
                     li
