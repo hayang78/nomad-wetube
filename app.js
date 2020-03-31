@@ -5,7 +5,9 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import bodyparser from "body-parser";
 import passport from "passport";
+import mongoose from "mongoose";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import { localsMiddleware } from "./middleware";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
@@ -16,6 +18,8 @@ import routes from "./routes";
 import "./passport";
 
 const app = express();
+
+const CookieStore = MongoStore(session);
 
 //const handleHome = (req, res) => res.send("Hello from Home"); //삭제
 //const handleProfile = (req, res) => res.send("You are on my profile"); //삭제
@@ -34,7 +38,10 @@ app.use(
   session({
     secret: process.env.COOKIE_SECRET, //세션 암호화키 randomkeygen.com에서 생성
     resave: true,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store: new CookieStore({
+      mongooseConnection: mongoose.connection
+    })
   })
 );
 

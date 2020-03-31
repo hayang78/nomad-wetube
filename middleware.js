@@ -14,5 +14,22 @@ export const localsMiddleware = (req, res, next) => {
   next();
 };
 
+//이미 로그인이 되어있으면 Join등으로 접근을 차단하기 위한 미들웽어
+export const onlyPublic = (req, res, next) => {
+  if (req.user) {
+    res.redirect(routes.home);
+  } else {
+    next();
+  }
+};
+
+export const onlyPrivate = (req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    res.redirect(routes.home);
+  }
+};
+
 //Single은 하나의 파일만 업로드할수있다. videoFile -> Form.input의 이름
 export const uploadVideo = multerVideo.single("videoFile");
