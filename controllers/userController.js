@@ -76,6 +76,47 @@ export const postGithubLogIn = (req, res) => {
   res.redirect(routes.home);
 };
 
+export const facebookLogin = passport.authenticate("facebook");
+
+export const facebookLoginCallback = async (
+  accessToken,
+  refreshToken,
+  profile,
+  cb
+) => {
+  // async (accessToken, refreshToken, profile, cb) => {
+  console.log(profile);
+  // const {
+  //   _json: { id, avatar_url, name, email }
+  // } = profile;
+
+  // try {
+  //   const user = await User.findOne({ email });
+  //   if (user) {
+  //     //사용자를 찾으면 이미 등록된 사용자이기 때문에 로그인 정보에서 깃허브 아이디를 업데이트 시킨다.
+  //     user.facebookId = id;
+  //     user.save();
+  //     return cb(null, user);
+  //   } else {
+  //     //E11000 Duplicate Error - passportLocalMongoose 플러그인을 Collection을 생성한 이후에 추가해서 발생하는 오류
+  //     //Collection을 삭제하고 다시 실행하면 정상 동작
+  //     const newUser = await User.create({
+  //       email,
+  //       name,
+  //       facebookId: id,
+  //       avatarUrl: avatar_url
+  //     });
+  //     return cb(null, newUser);
+  //   }
+  // } catch (error) {
+  //   return cb(error);
+  // }
+};
+
+export const postFacebookLogIn = (req, res) => {
+  res.redirect(routes.home);
+};
+
 export const logout = (req, res) => {
   // Process Log Out
   req.logout(); //passport 로그아웃
