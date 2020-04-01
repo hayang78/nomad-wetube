@@ -10,7 +10,7 @@ header.header
             ul
                 // user.isAuthenticated === false 로 사용하면 user객체가 없을 경우 false로 빠져 버린다.
                 //if !user.isAuthenticated  
-                if !user
+                if !loggedUser
                     li
                         a(href=routes.join) Join
                     li
@@ -19,6 +19,6 @@ header.header
                     li
                         a(href=`/videos${routes.upload}`) Upload
                     li
-                        a(href=routes.userDetail(user.id)) Profile
+                        a(href=routes.me) Profile
                     li
                         a(href=routes.logout) Log Out
