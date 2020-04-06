@@ -49,11 +49,14 @@ export const postUpload = async (req, res) => {
   const newVideo = await Video.create({
     fileUrl: path,
     title: title,
-    description: description
+    description: description,
+    creator: req.user.id
   });
+  req.user.videos.push(newVideo.id);
+  req.user.save();
   // To Do: Upload and Save Video
   //res.render("upload", { pageTitle: "Upload" });
-  console.log(newVideo);
+  //console.log(newVideo);
   res.redirect(routes.videoDetail(newVideo.id));
 };
 
@@ -64,8 +67,8 @@ export const videoDetail = async (req, res) => {
   } = req;
 
   try {
-    const video = await Video.findById(id);
-    //console.log(video);
+    const video = await Video.findById(id).populate("creator"); //populate는 objectId type만 사용할 수 있으며 해당 id객체도 함께 가져온다.
+    console.log(video);
     res.render("videoDetail", { pageTitle: video.title, video }); //video => video: video와 동일 같은 이름을 쓸때는 이렇게 사용가능ㅎ다.
   } catch (error) {
     //console.log(error);
@@ -79,7 +82,12 @@ export const getEditVideo = async (req, res) => {
   } = req;
   try {
     const video = await Video.findById(id);
-    res.render("editVideo", { pageTitle: `Edit ${video.title}`, video });
+    //Url로 직접 접근등으로 해킹 시도시 차단하기 위함
+    if (String(video.creator) !== req.user.id) {
+      throw Error();
+    } else {
+      res.render("editVideo", { pageTitle: `Edit ${video.title}`, video });
+    }
   } catch (error) {
     res.redirect(routes.home);
   }
@@ -103,7 +111,11 @@ export const deleteVideo = async (req, res) => {
     params: { id }
   } = req;
   try {
-    await Video.findOneAndRemove({ _id: id });
+    if (String(video.creator) !== req.user.id) {
+      throw Error();
+    } else {
+      await Video.findOneAndRemove({ _id: id });
+    }
     //res.render("deleteVideo", { pageTitle: "Delete Video" });
   } catch (error) {
     console.log(error);

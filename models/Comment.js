@@ -8,7 +8,12 @@ const CommentSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
   }
+
   //Video에서 참조
   //   ,video: {
   //     type: mongoose.Schema.Types.ObjectId,

@@ -27,6 +27,7 @@ const CookieStore = MongoStore(session);
 app.use(helmet());
 app.set("view engine", "pug");
 app.use("/uploads", express.static("uploads")); //디렉토리를 전달해줌. /uploads로 접근시 uploads 디렉토리 전달
+//app.use("/users/uploads", express.static("uploads"));
 app.use("/static", express.static("static"));
 app.use(cookieParser());
 app.use(bodyparser.json());
