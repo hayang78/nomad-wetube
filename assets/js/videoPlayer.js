@@ -2,6 +2,7 @@ const videoContainer = document.getElementById("jsVideoPlayer");
 const videoPlayer = document.querySelector("#jsVideoPlayer video");
 const playBtn = document.getElementById("jsPlayButton");
 const volumeBtn = document.getElementById("jsVolumeButton");
+const fullScreenBtn = document.getElementById("jsFullScreen");
 
 console.log("Hi");
 console.log(videoContainer);
@@ -30,9 +31,26 @@ const handleVolumeClick = () => {
   }
 };
 
+const exitFullScreen = () => {
+  document.webkitExitFullscreen();
+  fullScreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+  fullScreenBtn.removeEventListener("click", exitFullScreen);
+  fullScreenBtn.addEventListener("click", goFullScreen);
+};
+
+const goFullScreen = () => {
+  //https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullScreen
+  //Vendor에서 제공하는 Prefix를 사용해야함 Crome -> webkit
+  videoContainer.webkitRequestFullscreen();
+  fullScreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+  fullScreenBtn.removeEventListener("click", goFullScreen);
+  fullScreenBtn.addEventListener("click", exitFullScreen);
+};
+
 function init() {
   playBtn.addEventListener("click", handlePlayClick);
   volumeBtn.addEventListener("click", handleVolumeClick);
+  fullScreenBtn.addEventListener("click", goFullScreen);
 }
 
 if (videoContainer) {
