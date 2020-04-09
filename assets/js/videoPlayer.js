@@ -5,6 +5,7 @@ const volumeBtn = document.getElementById("jsVolumeButton");
 const fullScreenBtn = document.getElementById("jsFullScreen");
 const currentTime = document.getElementById("jsCurrentTime");
 const totalTime = document.getElementById("jsTotalTime");
+const volumeRange = document.getElementById("jsVolume");
 
 //모든 페이지에 js파일이 로드되기 때문에 jsVideoPlayer가 없는 경우 에러가 발생한다.
 //그래서 항상 체크하는 로직을 넣어줘야함
@@ -25,8 +26,10 @@ const handleVolumeClick = () => {
   if (videoPlayer.muted) {
     videoPlayer.muted = false;
     volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+    volumeRange.value = videoPlayer.volume;
   } else {
     videoPlayer.muted = true;
+    volumeRange.value = 0;
     volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
   }
 };
@@ -82,7 +85,7 @@ const formatDate = seconds => {
 };
 
 function getCurrentTime() {
-  const currentTimeString = formatDate(videoPlayer.currentTime);
+  const currentTimeString = formatDate(Math.floor(videoPlayer.currentTime));
   currentTime.innerHTML = currentTimeString;
 }
 
@@ -92,11 +95,34 @@ function setTotalTime() {
   setInterval(getCurrentTime, 1000);
 }
 
+function handleEnded() {
+  videoPlayer.currentTime = 0;
+  playBtn.innerHTML = '<i class="fas fa-play"></i>';
+}
+
+function handelDrag(event) {
+  //console.log(event.target.value);
+  const {
+    target: { value }
+  } = event;
+  videoPlayer.volume = value;
+  if (value >= 0.6) {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+  } else if (value >= 0.2) {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-down"></i>';
+  } else {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-off"></i>';
+  }
+}
+
 function init() {
+  videoPlayer.volume = 0.5;
   playBtn.addEventListener("click", handlePlayClick);
   volumeBtn.addEventListener("click", handleVolumeClick);
   fullScreenBtn.addEventListener("click", goFullScreen);
   videoPlayer.addEventListener("loadedmetadata", setTotalTime);
+  videoPlayer.addEventListener("ended", handleEnded);
+  volumeRange.addEventListener("input", handelDrag);
 }
 
 if (videoContainer) {
