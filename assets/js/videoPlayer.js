@@ -7,6 +7,12 @@ const currentTime = document.getElementById("jsCurrentTime");
 const totalTime = document.getElementById("jsTotalTime");
 const volumeRange = document.getElementById("jsVolume");
 
+const registerView = () => {
+  //window.location.href -> 현재 페이지의 주소
+  const videoId = window.location.href.split("/videos/")[1];
+  fetch(`/api/${videoId}/view`, { method: "POST" });
+};
+
 //모든 페이지에 js파일이 로드되기 때문에 jsVideoPlayer가 없는 경우 에러가 발생한다.
 //그래서 항상 체크하는 로직을 넣어줘야함
 //videoContainer.addEventListener("click", () => false);
@@ -96,6 +102,7 @@ function setTotalTime() {
 }
 
 function handleEnded() {
+  registerView();
   videoPlayer.currentTime = 0;
   playBtn.innerHTML = '<i class="fas fa-play"></i>';
 }

@@ -9,10 +9,11 @@ import mongoose from "mongoose";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import { localsMiddleware } from "./middleware";
+import routes from "./routes";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import globalRouter from "./routers/globalRouter";
-import routes from "./routes";
+import apiRouter from "./routers/apiRouter";
 //import { userRouter } from "./routers/userRouter"; // export default로 선언하지 않은 것을 import할때는 이렇게 import 해야한다.
 
 import "./passport";
@@ -61,5 +62,6 @@ app.use(localsMiddleware);
 app.use(routes.home, globalRouter);
 app.use(routes.users, userRouter); // /user로 들어오는 모든 요청을 userRouter로 이용한다.
 app.use(routes.videos, videoRouter);
+app.use(routes.api, apiRouter);
 
 export default app;
