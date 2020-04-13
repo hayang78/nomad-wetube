@@ -1,6 +1,7 @@
 //import { videos } from "../db"; // DB초기화는  init.js에서 처리
 import routes from "../routes";
 import Video from "../models/Video";
+import Comment from "../models/Comment";
 
 export const home = async (req, res) => {
   try {
@@ -67,7 +68,9 @@ export const videoDetail = async (req, res) => {
   } = req;
 
   try {
-    const video = await Video.findById(id).populate("creator"); //populate는 objectId type만 사용할 수 있으며 해당 id객체도 함께 가져온다.
+    const video = await Video.findById(id)
+      .populate("creator")
+      .populate("comments"); //populate는 objectId type만 사용할 수 있으며 해당 id객체도 함께 가져온다.
     console.log(video);
     res.render("videoDetail", { pageTitle: video.title, video }); //video => video: video와 동일 같은 이름을 쓸때는 이렇게 사용가능ㅎ다.
   } catch (error) {
@@ -134,6 +137,29 @@ export const postRegisterView = async (req, res) => {
     video.save();
     res.status(200);
   } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const postAddComment = async (req, res) => {
+  console.log("postAddComment");
+  const {
+    params: { id },
+    body: { comment },
+    user
+  } = req;
+  try {
+    const video = await Video.findById(id);
+    const newComment = await Comment.create({
+      text: comment,
+      creator: user.id
+    });
+    video.comments.push(newComment.id);
+    video.save();
+  } catch (error) {
+    //console.log(error);
     res.status(400);
   } finally {
     res.end();

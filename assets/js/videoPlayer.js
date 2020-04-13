@@ -10,6 +10,7 @@ const volumeRange = document.getElementById("jsVolume");
 const registerView = () => {
   //window.location.href -> 현재 페이지의 주소
   const videoId = window.location.href.split("/videos/")[1];
+  //await fetch를 쓸수있지만 여기서는 대기가 필요없어서 사용하지 않음
   fetch(`/api/${videoId}/view`, { method: "POST" });
 };
 
