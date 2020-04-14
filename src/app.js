@@ -7,6 +7,7 @@ import bodyparser from "body-parser";
 import passport from "passport";
 import mongoose from "mongoose";
 import session from "express-session";
+import path from "path";
 import MongoStore from "connect-mongo";
 import { localsMiddleware } from "./middleware";
 import routes from "./routes";
@@ -27,9 +28,10 @@ const CookieStore = MongoStore(session);
 
 app.use(helmet());
 app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views")); //build를 하게되면 경로를 루트에서 찾기 때문에 경로를 수정해줌
 app.use("/uploads", express.static("uploads")); //디렉토리를 전달해줌. /uploads로 접근시 uploads 디렉토리 전달
 //app.use("/users/uploads", express.static("uploads"));
-app.use("/static", express.static("static"));
+app.use("/static", express.static(path.join(__dirname, "static")));
 app.use(cookieParser());
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));

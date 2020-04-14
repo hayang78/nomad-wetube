@@ -1,6 +1,8 @@
+import "@babel/polyfill"; //빌드후 실행시 오류때문에
 import dotenv from "dotenv";
 import "./db";
 import app from "./app";
+
 dotenv.config();
 
 import "./models/Video";
