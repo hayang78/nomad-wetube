@@ -7,12 +7,22 @@ html
         title #{pageTitle} | #{siteName}
         link(rel="stylesheet", href="/static/styles.css")
     body
+        //- span=JSON.stringify(messages)
         if messages.error
-            span=messages.error
+            +message({
+                type:'error',
+                text:messages.error
+            })
         else if messages.info
-            span=messages.info
+            +message({
+                type:'info',
+                text:messages.info
+            })
         else if messages.success
-            span=messages.success
+            +message({
+                type:'success',
+                text:messages.success
+            })
         include ../partials/header
         main
             block content
