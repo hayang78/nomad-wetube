@@ -8,6 +8,7 @@ import passport from "passport";
 import mongoose from "mongoose";
 import session from "express-session";
 import path from "path";
+import flash from "express-flash";
 import MongoStore from "connect-mongo";
 import { localsMiddleware } from "./middleware";
 import routes from "./routes";
@@ -44,10 +45,12 @@ app.use(
     resave: true,
     saveUninitialized: false,
     store: new CookieStore({
-      mongooseConnection: mongoose.connection
-    })
+      mongooseConnection: mongoose.connection,
+    }),
   })
 );
+
+app.use(flash());
 
 //Passport가 쿠키를 보고, 그 쿠키 정보에 해당하는 사용자를 찾아준다.
 //passport는 자기가 찾은 사용자를 요청(request)의 object(req.user)로 만들어준다.

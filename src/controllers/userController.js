@@ -10,9 +10,10 @@ export const getJoin = (req, res) => {
 export const postJoin = async (req, res, next) => {
   //console.log(req.body);
   const {
-    body: { name, email, password, password2 }
+    body: { name, email, password, password2 },
   } = req;
   if (password !== password2) {
+    req.flash("error", "Passwords don't match");
     res.status(400); //브라우저에 Badrequest(400)을 전송하고 join을 다시 보여줌
     res.render("join", { pageTitle: "Join" });
   } else {
@@ -20,7 +21,7 @@ export const postJoin = async (req, res, next) => {
       //To Do: Register User
       const user = await User({
         name,
-        email
+        email,
       });
       await User.register(user, password);
       next();
@@ -38,16 +39,21 @@ export const getLogin = (req, res) =>
 //authenticate는 Username(->email)과 password를 찾아보도록 되어있음
 export const postLogin = passport.authenticate("local", {
   failureRedirect: routes.login,
-  successRedirect: routes.home
+  successRedirect: routes.home,
+  successFlash: "Welcome",
+  failureFlash: "Can't log in. Check email and/or password",
 });
 
-export const githubLogin = passport.authenticate("github");
+export const githubLogin = passport.authenticate("github", {
+  successFlash: "Welcome",
+  failureFlash: "Can't log in at this time.",
+});
 
 export const githubLoginCallback = async (_, __, profile, cb) => {
   // async (accessToken, refreshToken, profile, cb) => {
   //console.log(profile);
   const {
-    _json: { id, avatar_url, name, email }
+    _json: { id, avatar_url, name, email },
   } = profile;
 
   try {
@@ -64,7 +70,7 @@ export const githubLoginCallback = async (_, __, profile, cb) => {
         email,
         name,
         githubId: id,
-        avatarUrl: avatar_url
+        avatarUrl: avatar_url,
       });
       return cb(null, newUser);
     }
@@ -77,13 +83,16 @@ export const postGithubLogIn = (req, res) => {
   res.redirect(routes.home);
 };
 
-export const facebookLogin = passport.authenticate("facebook");
+export const facebookLogin = passport.authenticate("facebook", {
+  successFlash: "Welcome",
+  failureFlash: "Can't log in at this time.",
+});
 
 export const facebookLoginCallback = async (_, __, profile, cb) => {
   // async (accessToken, refreshToken, profile, cb) => {
   console.log(profile);
   const {
-    _json: { id, name, email }
+    _json: { id, name, email },
   } = profile;
 
   try {
@@ -101,7 +110,7 @@ export const facebookLoginCallback = async (_, __, profile, cb) => {
         email,
         name,
         facebookId: id,
-        avatarUrl: `https://graph.facebook.com/${id}/picture?type=large`
+        avatarUrl: `https://graph.facebook.com/${id}/picture?type=large`,
       });
       return cb(null, newUser);
     }
@@ -115,6 +124,8 @@ export const postFacebookLogIn = (req, res) => {
 };
 
 export const logout = (req, res) => {
+  req.flash("info", "Logged out, see you later.");
+
   // Process Log Out
   req.logout(); //passport 로그아웃
   res.redirect(routes.home);
@@ -129,12 +140,13 @@ export const getMe = (req, res) => {
 
 export const userDetail = async (req, res) => {
   const {
-    params: { id }
+    params: { id },
   } = req;
   try {
     const user = await User.findById(id).populate("videos");
     res.render("userDetail", { pageTitle: "User Detail", user });
   } catch (error) {
+    req.flash("error", "User not found");
     res.redirect(routes.home);
   }
 };
@@ -145,7 +157,7 @@ export const getEditProfile = (req, res) =>
 export const postEditProfile = async (req, res) => {
   const {
     body: { name, email },
-    file
+    file,
   } = req;
   //console.log(name, email, file);
   try {
@@ -153,10 +165,12 @@ export const postEditProfile = async (req, res) => {
     await User.findByIdAndUpdate(req.user.id, {
       name,
       email,
-      avatarUrl: file ? file.path : req.user.avatarUrl
+      avatarUrl: file ? file.path : req.user.avatarUrl,
     });
+    req.flas("success", "Pofile updated.");
     res.redirect(routes.me);
   } catch (error) {
+    req.flash("error", "Can't update profile.");
     //console.log(error);
     res.redirect(routes.editProfile);
   }
@@ -167,11 +181,12 @@ export const getChangePassword = (req, res) =>
 
 export const postChangePassword = async (req, res) => {
   const {
-    body: { oldPassword, newPassword, newPassword1 }
+    body: { oldPassword, newPassword, newPassword1 },
   } = req;
 
   try {
     if (newPassword !== newPassword1) {
+      req.flash("error", "Passwords don't match");
       res.status(400);
       res.redirect(`/users${routes.changePassword}`);
       return;
@@ -179,7 +194,8 @@ export const postChangePassword = async (req, res) => {
     await req.user.changePassword(oldPassword, newPassword); //passport-local-mongoose 문서 참고
     res.redirect(routes.me);
   } catch (error) {
-    console.log(error);
+    req.flash("error", "Can't change password.");
+    //console.log(error);
     res.status(400);
     res.redirect(`/users${routes.changePassword}`);
   }
